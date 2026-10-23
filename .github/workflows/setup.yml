@@ -1,6 +1,9 @@
 name: Auto-Generate Directory Structure
 on: workflow_dispatch
 
+permissions:
+  contents: write
+
 jobs:
   build_structure:
     runs-on: ubuntu-latest
