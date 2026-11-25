@@ -1,0 +1,22 @@
+name: Block Data Files (Org Guardrail)
+
+on:
+  workflow_call:
+
+jobs:
+  check-no-datasets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fail if raw/processed data or model binaries are tracked in Git
+        run: |
+          FORBIDDEN=$(git ls-files | grep -E '\.(parquet|csv|xlsx|xls|zip|feather|pkl|cbm|joblib)$' || true)
+          if [ -n "$FORBIDDEN" ]; then
+            echo "ERROR: Forbidden dataset or binary files detected in Git:"
+            echo "$FORBIDDEN"
+            echo "Move all datasets to Google Drive Parquet Lake and keep only data/manifest.json in GitHub."
+            exit 1
+          fi
+          echo "PASS: Zero dataset files tracked in Git."
